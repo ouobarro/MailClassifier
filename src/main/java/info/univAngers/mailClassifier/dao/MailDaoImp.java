@@ -8,6 +8,7 @@ package info.univAngers.mailClassifier.dao;
 import info.univAngers.mailClassifier.model.Mail;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,8 @@ public class MailDaoImp implements MailDaoInterface {
     public Mail getMailById(Integer idMail) throws Exception {
         try{
             return em.find(Mail.class, idMail);
+        }catch(NoResultException ex){
+            return null;
         } catch(Exception ex){
             throw ex;
         }
@@ -38,7 +41,20 @@ public class MailDaoImp implements MailDaoInterface {
             return em.createQuery("SELECT m FROM Mail m where m.sender.idPerson = :idPerson")
                     .setParameter("idPerson", idPerson).getResultList();
             
+        }catch(NoResultException ex){
+            return null;
         } catch(Exception ex){
+            throw ex;
+        }
+    }
+    
+    @Override
+    public List<Mail> getAllMail() throws Exception {
+        try{
+            return em.createQuery("SELECT m FROM Mail m").getResultList();
+        } catch(NoResultException ex){
+            return null;
+        }  catch(Exception ex){
             throw ex;
         }
     }

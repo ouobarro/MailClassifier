@@ -15,6 +15,6 @@ public interface BroadcastListDaoInterface {
     
     public BroadcastList getBroadcastListById(Integer idBroadcastList) throws Exception;
     
-    public BroadcastList getBroadcastListByLibelle(Integer broadcastListLibelle) throws Exception;
+    public BroadcastList getBroadcastListByLibelle(String broadcastListLibelle) throws Exception;
     
 }

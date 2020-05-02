@@ -6,7 +6,9 @@
 package info.univAngers.mailClassifier.service;
 
 import info.univAngers.mailClassifier.dao.PersonDaoInterface;
+import info.univAngers.mailClassifier.dto.PersonDto;
 import info.univAngers.mailClassifier.model.Person;
+import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +26,44 @@ public class PersonServiceImp implements PersonServiceInterface {
     private PersonDaoInterface personDao;
     
     @Override
-    public List<Person> getAllPerson() throws Exception {
+    public List<PersonDto> getAllPerson() throws Exception {
         try{
-            return personDao.getAllPerson();
+            List<Person> personList = personDao.getAllPerson();
+            List<PersonDto> personDtoList = new ArrayList<>();
+            if(personList != null){
+                for(Person person: personList){
+                    personDtoList.add(EntityDtoConverter.convertToDto(person));
+                }
+            }
+            return personDtoList;
         } catch(Exception ex){
            throw ex;    
         }
     }
 
     @Override
-    public Person getPersonById(int idPerson) throws Exception {
+    public PersonDto getPersonById(Integer id) throws Exception {
         try{
-            return personDao.getPersonById(idPerson);  
+            Person person = personDao.getPersonById(id);
+            if(person != null){
+                return EntityDtoConverter.convertToDto(person);
+            }else{
+                return null;
+            }
         }catch(Exception ex){
            throw ex;    
         }
     }
     
     @Override
-    public Person getPersonByEmailAddress(String emailAddress) throws Exception {
+    public PersonDto getPersonByEmailAddress(String emailAddress) throws Exception {
         try{
-            return personDao.getPersonByEmailAddress(emailAddress);  
+            Person person = personDao.getPersonByEmailAddress(emailAddress);
+            if(person != null){
+                return EntityDtoConverter.convertToDto(person);
+            }else{
+                return null;
+            }
         }catch(Exception ex){
            throw ex;    
         }

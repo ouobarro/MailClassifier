@@ -8,6 +8,7 @@ package info.univAngers.mailClassifier.dao;
 import info.univAngers.mailClassifier.model.Person;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class PersonDaoImp implements PersonDaoInterface {
     }
 
     @Override
-    public Person getPersonById(int idPerson) {
+    public Person getPersonById(Integer idPerson) {
         try {
             return em.find(Person.class, idPerson);
         } catch (Exception ex) {
@@ -46,6 +47,8 @@ public class PersonDaoImp implements PersonDaoInterface {
         try {
             return (Person) em.createQuery("SELECT p FROM Person p where p.personEmailAddress = :emailAddress")
                     .setParameter("emailAddress", emailAddress).getSingleResult();
+        } catch (NoResultException nrex) {
+            return null;
         } catch (Exception ex) {
             throw ex;
         }

@@ -6,6 +6,7 @@
 package info.univAngers.mailClassifier.service;
 
 import info.univAngers.mailClassifier.dao.BroadcastListDaoInterface;
+import info.univAngers.mailClassifier.dto.BroadcastListDto;
 import info.univAngers.mailClassifier.model.BroadcastList;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,28 @@ public class BroadcastListServiceImp implements BroadcastListServiceInterface{
     private BroadcastListDaoInterface  broadcastListDao;
 
     @Override
-    public BroadcastList getBroadcastListById(Integer idBroadcastList) throws Exception {
+    public BroadcastListDto getBroadcastListById(Integer id) throws Exception {
         try{
-            return broadcastListDao.getBroadcastListById(idBroadcastList);
+            BroadcastList broadcastList = broadcastListDao.getBroadcastListById(id);
+            if(broadcastList != null){
+                return EntityDtoConverter.convertToDto(broadcastList);
+            }else{
+                return null;
+            }
         }catch(Exception ex){
             throw ex;
         }
     }
 
     @Override
-    public BroadcastList getBroadcastListByLibelle(Integer broadcastListLibelle) throws Exception {
+    public BroadcastListDto getBroadcastListByLibelle(String libelle) throws Exception {
         try{
-            return broadcastListDao.getBroadcastListByLibelle(broadcastListLibelle);
+            BroadcastList broadcastList = broadcastListDao.getBroadcastListByLibelle(libelle);
+            if(broadcastList != null){
+                return EntityDtoConverter.convertToDto(broadcastList);
+            }else{
+                return null;
+            }
         }catch(Exception ex){
             throw ex;
         }

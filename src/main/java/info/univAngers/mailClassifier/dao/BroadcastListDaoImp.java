@@ -35,7 +35,7 @@ public class BroadcastListDaoImp implements BroadcastListDaoInterface {
     }
 
     @Override
-    public BroadcastList getBroadcastListByLibelle(Integer broadcastListLibelle) throws Exception {
+    public BroadcastList getBroadcastListByLibelle(String broadcastListLibelle) throws Exception {
         try{
             return (BroadcastList) em.createQuery("SELECT b FROM BroadcastList b WHERE b.libelle = :libelle")
                     .setParameter("libelle", broadcastListLibelle).getSingleResult();

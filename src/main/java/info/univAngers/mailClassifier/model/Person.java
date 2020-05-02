@@ -5,6 +5,7 @@
  */
 package info.univAngers.mailClassifier.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -15,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -22,7 +24,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,8 +37,7 @@ import lombok.Setter;
 @NamedQueries({
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByIdperson", query = "SELECT p FROM Person p WHERE p.idPerson = :idPerson"),
-    @NamedQuery(name = "Person.findByLastName", query = "SELECT p FROM Person p WHERE p.lastName = :lastName"),
-    @NamedQuery(name = "Person.findByFirstName", query = "SELECT p FROM Person p WHERE p.firstName = :firstName"),
+    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
     @NamedQuery(name = "Person.findByPersonEmailAddress", query = "SELECT p FROM Person p WHERE p.personEmailAddress = :personEmailAddress")})
 public class Person implements Serializable {
 
@@ -49,15 +49,10 @@ public class Person implements Serializable {
     @Getter
     private Integer idPerson;
     
-    @Size(max = 45)
-    @Column(name = "first_name", length = 45)
+    @Size(max = 80)
+    @Column(name = "name", length = 80)
     @Getter @Setter
-    private String firstName;
-    
-    @Size(max = 45)
-    @Column(name = "last_name", length = 45)
-    @Getter @Setter
-    private String lastName;
+    private String name;
     
     @Basic(optional = false)
     @NotNull
@@ -66,10 +61,12 @@ public class Person implements Serializable {
     private String personEmailAddress;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sender", fetch = FetchType.LAZY)
+    @Getter @Setter
     private List<Mail> mailList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", fetch = FetchType.LAZY)
-    private List<PersonIncomeMail> personIncomeMailList;
+    @ManyToMany(mappedBy = "receiverList")
+    @Getter @Setter
+    private List<Mail> receivedMailList;
 
     public Person() {
     }
@@ -91,23 +88,6 @@ public class Person implements Serializable {
         this.personEmailAddress = personEmailAddress;
     }
 
-    @XmlTransient
-    public List<Mail> getMailList() {
-        return mailList;
-    }
-
-    public void setMailList(List<Mail> mailList) {
-        this.mailList = mailList;
-    }
-
-    @XmlTransient
-    public List<PersonIncomeMail> getPersonIncomeMailList() {
-        return personIncomeMailList;
-    }
-
-    public void setPersonIncomeMailList(List<PersonIncomeMail> personIncomeMailList) {
-        this.personIncomeMailList = personIncomeMailList;
-    }
 
     @Override
     public int hashCode() {

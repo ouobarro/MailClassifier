@@ -5,7 +5,7 @@
  */
 package info.univAngers.mailClassifier.service;
 
-import info.univAngers.mailClassifier.model.BroadcastList;
+import info.univAngers.mailClassifier.dto.BroadcastListDto;
 
 /**
  *
@@ -13,8 +13,8 @@ import info.univAngers.mailClassifier.model.BroadcastList;
  */
 public interface BroadcastListServiceInterface {
     
-    public BroadcastList getBroadcastListById(Integer idBroadcastList) throws Exception;
+    public BroadcastListDto getBroadcastListById(Integer id) throws Exception;
     
-    public BroadcastList getBroadcastListByLibelle(Integer broadcastListLibelle) throws Exception;
+    public BroadcastListDto getBroadcastListByLibelle(String libelle) throws Exception;
     
 }

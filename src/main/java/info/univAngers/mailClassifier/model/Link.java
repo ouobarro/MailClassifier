@@ -35,7 +35,8 @@ import lombok.Setter;
     @NamedQuery(name = "Link.findAll", query = "SELECT l FROM Link l"),
     @NamedQuery(name = "Link.findByIdLink", query = "SELECT l FROM Link l WHERE l.idLink = :idLink"),
     @NamedQuery(name = "Link.findByUrlLink", query = "SELECT l FROM Link l WHERE l.urlLink = :urlLink"),
-    @NamedQuery(name = "Link.findByLibelle", query = "SELECT l FROM Link l WHERE l.libelle = :libelle")})
+    @NamedQuery(name = "Link.findByLibelle", query = "SELECT l FROM Link l WHERE l.libelle = :libelle"),
+    @NamedQuery(name = "Link.findByTargetLink", query = "SELECT l FROM Link l WHERE l.targetLink = :targetLink")})
 public class Link implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,12 +51,19 @@ public class Link implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
-    @Column(nullable = false, length = 200)
+    @Column(name = "url_link", nullable = false, length = 200)
+    @Getter @Setter
     private String urlLink;
     
     @Size(max = 100)
-    @Column(length = 100)
+    @Column(name = "libelle", length = 100)
+    @Getter @Setter
     private String libelle;
+            
+    @Size(min = 1, max = 200)
+    @Column(name = "target_link", length = 200)
+    @Getter @Setter
+    private String targetLink;
     
     @JoinColumn(name = "mail_id", referencedColumnName = "id_mail", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -72,22 +80,6 @@ public class Link implements Serializable {
     public Link(Integer idLink, String urlLink) {
         this.idLink = idLink;
         this.urlLink = urlLink;
-    }
-
-    public String getUrlLink() {
-        return urlLink;
-    }
-
-    public void setUrlLink(String urlLink) {
-        this.urlLink = urlLink;
-    }
-
-    public String getLibelle() {
-        return libelle;
-    }
-
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
     }
 
     @Override

@@ -5,12 +5,17 @@
  */
 package info.univAngers.mailClassifier.controller;
 
+import info.univAngers.mailClassifier.dto.PersonDto;
 import info.univAngers.mailClassifier.model.Person;
 import info.univAngers.mailClassifier.service.PersonServiceInterface;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author barro
  */
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api")
 public class PersonController {
     
@@ -27,8 +32,23 @@ public class PersonController {
     private PersonServiceInterface personService;
     
     @GetMapping("/personnes")
-    public List<Person> getAllPerson() throws Exception{
+    public List<PersonDto> getAllPerson() throws Exception{
+        
         return personService.getAllPerson();
+        
     }
+    
+    @PostMapping("/personnes")
+    public void insertperson(@Valid @RequestBody Person person) throws Exception{
+        
+            personService.insertPerson(person);
+       
+    }
+    
+    // Get a Single person
+	@GetMapping("/personnes/{id}")
+	public PersonDto getPersonById(@PathVariable(value = "id") int idPerson) throws Exception {
+		return personService.getPersonById(idPerson);
+	}
     
 }

@@ -6,7 +6,6 @@
 package info.univAngers.mailClassifier.dao;
 
 import info.univAngers.mailClassifier.model.Mail;
-import info.univAngers.mailClassifier.model.Person;
 import java.util.List;
 
 /**
@@ -16,6 +15,8 @@ import java.util.List;
 public interface MailDaoInterface {
     
     public Mail getMailById(Integer idMail) throws Exception;
+    
+    public List<Mail> getAllMail() throws Exception;
     
     public List<Mail> getMailByPerson(Integer idPerson) throws Exception;
     

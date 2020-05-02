@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface PersonDaoInterface {
     public List<Person> getAllPerson() throws Exception;   
-    public Person getPersonById(int idPerson) throws Exception;
+    public Person getPersonById(Integer idPerson) throws Exception;
     public Person getPersonByEmailAddress(String emailAddress) throws Exception;
     public void insertPerson(Person person) throws Exception;
     
