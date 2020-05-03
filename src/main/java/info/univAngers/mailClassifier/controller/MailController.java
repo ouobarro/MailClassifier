@@ -36,8 +36,9 @@ public class MailController {
     public CustomMessage testMailFileRead() {
         System.out.println("================== ECHO FILE READING!!! ==================");
         try {
-            CustomMessage message = new CustomMessage("president_2010-06" + File.separator + "10");
-            mailService.insertMail(message);
+            //CustomMessage message = new CustomMessage("president_2010-06" + File.separator + "10");
+            CustomMessage message = new CustomMessage("375");
+            //mailService.insertMail(message);
             return message;
         } catch (Exception ex) {
             Logger.getLogger(MailController.class.getName()).log(Level.SEVERE, null, ex);

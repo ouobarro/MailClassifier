@@ -75,6 +75,12 @@ public class Mail implements Serializable {
     @Getter
     @Setter
     private Date sendDate;
+    
+    @Size(max = 200)
+    @Column(name = "signature", length = 200)
+    @Getter
+    @Setter
+    private String signature;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mail", fetch = FetchType.LAZY)
     @Getter
@@ -102,6 +108,14 @@ public class Mail implements Serializable {
     )
     @Getter @Setter
     private List<Person> receiverList;
+    
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "person_mail_cc",
+            joinColumns = @JoinColumn(name = "mail_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id")
+    )
+    @Getter @Setter
+    private List<Person> receiverCcList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mail", fetch = FetchType.LAZY)
     @Getter

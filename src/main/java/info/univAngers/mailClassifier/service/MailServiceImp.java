@@ -133,6 +133,26 @@ public class MailServiceImp implements MailServiceInterface {
                 }
                 mail.setReceiverList(toList);
             }
+            
+            // Set Mail Receivers copy 
+            List<Person> ccList = new ArrayList<>();
+            InternetAddress[] ccAddressList = customMessage.getCc();
+            if (toAddressList.length > 0) {
+                for (InternetAddress iAddr : ccAddressList) {
+                    if (iAddr.getAddress().equalsIgnoreCase(sender.getPersonEmailAddress())) {
+                        ccList.add(sender);
+                    } else {
+                        Person person = personDao.getPersonByEmailAddress(iAddr.getAddress());
+                        if (person == null) {
+                            person = new Person();
+                            person.setName(iAddr.getPersonal());
+                            person.setPersonEmailAddress(iAddr.getAddress());
+                        }
+                        ccList.add(person);
+                    }
+                }
+                mail.setReceiverList(ccList);
+            }
 
             mailDao.insertMail(mail);
 

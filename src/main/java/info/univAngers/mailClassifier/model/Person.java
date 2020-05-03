@@ -68,6 +68,10 @@ public class Person implements Serializable {
     @Getter @Setter
     private List<Mail> receivedMailList;
 
+    @ManyToMany(mappedBy = "receiverCcList")
+    @Getter @Setter
+    private List<Mail> receivedCcMailList;
+    
     public Person() {
     }
 

@@ -30,6 +30,7 @@ public class EntityDtoConverter {
         mailDto.setSubject(mail.getSubject());
         mailDto.setContent(mail.getContent());
         mailDto.setSendDate(mail.getSendDate());
+        mailDto.setSignature(mail.getSignature());
         
         List<AttachmentDto> attachDtoList = new ArrayList<>();
         if(mail.getAttachmentList()!= null){
@@ -62,6 +63,14 @@ public class EntityDtoConverter {
             }
         }
         mailDto.setReceiverList(receiverDtoList);
+        
+        List<PersonDto> receiverCcDtoList = new ArrayList<>();
+        if(mail.getReceiverCcList()!= null){
+            for(Person person : mail.getReceiverCcList()){
+                receiverCcDtoList.add(convertToDto(person));
+            }
+        }
+        mailDto.setReceiverCcList(receiverCcDtoList);
         
         return mailDto;
     }

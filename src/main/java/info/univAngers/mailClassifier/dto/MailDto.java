@@ -29,6 +29,9 @@ public class MailDto {
     private Date sendDate;
     
     @Getter @Setter
+    private String signature;
+    
+    @Getter @Setter
     private BroadcastListDto bclDto;
     
     @Getter @Setter
@@ -42,4 +45,7 @@ public class MailDto {
     
     @Getter @Setter
     private List<PersonDto> receiverList;
+    
+    @Getter @Setter
+    private List<PersonDto> receiverCcList;
 }

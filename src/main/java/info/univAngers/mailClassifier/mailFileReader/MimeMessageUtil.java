@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -29,26 +30,47 @@ public class MimeMessageUtil {
         if (message.isMimeType("text/plain")) {
             result = message.getContent().toString();
         } else if (message.isMimeType("multipart/*")) {
+            System.out.println(">> Multipart/*");
             MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
             result = getTextFromMimeMultipart(mimeMultipart);
         }
         return result;
     }
 
-    private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws MessagingException, IOException {
-        String result = "";
+
+    private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws IOException, MessagingException {
+
         int count = mimeMultipart.getCount();
+        if (count == 0) {
+            throw new MessagingException("Multipart with no body parts not supported.");
+        }
+        boolean multipartAlt = new ContentType(mimeMultipart.getContentType()).match("multipart/alternative");
+        if (multipartAlt) // alternatives appear in an order of increasing 
+        // faithfulness to the original content. Customize as req'd.
+        {
+            System.out.println(">>> Multipart/alternative");
+            return getTextFromBodyPart(mimeMultipart.getBodyPart(count - 1));
+        }
+        String result = "";
         for (int i = 0; i < count; i++) {
             BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-            if (bodyPart.isMimeType("text/plain")) {
-                result = result + "\n" + bodyPart.getContent();
-                break; // without break same text appears twice in my tests
-            } else if (bodyPart.isMimeType("text/html")) {
-                String html = (String) bodyPart.getContent();
-                result = result + "\n" + Jsoup.parse(html).text();
-            } else if (bodyPart.getContent() instanceof MimeMultipart) {
-                result = result + getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
-            }
+            result += getTextFromBodyPart(bodyPart);
+        }
+        return result;
+    }
+
+    private static String getTextFromBodyPart(BodyPart bodyPart) throws IOException, MessagingException {
+        String result = "";
+        if (bodyPart.isMimeType("text/plain")) {
+            System.out.println("\t>> text/plain");
+            result = (String) bodyPart.getContent();
+        } else if (bodyPart.isMimeType("text/html")) {
+            System.out.println("\t>> text/html");
+            String html = (String) bodyPart.getContent();
+            result = org.jsoup.Jsoup.parse(html).text();
+        } else if (bodyPart.getContent() instanceof MimeMultipart) {
+            System.out.println("\t>> MimeMultipart");
+            result = getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent());
         }
         return result;
     }
@@ -98,7 +120,7 @@ public class MimeMessageUtil {
                 }
             }
         }
-        
+
         InternetAddress[] finalAddrArray = new InternetAddress[addressWithoutDup.size()];
         addressWithoutDup.toArray(finalAddrArray);
 
