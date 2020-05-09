@@ -6,7 +6,9 @@
 package info.univAngers.mailClassifier.model;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,8 +36,7 @@ import lombok.Setter;
 @NamedQueries({
     @NamedQuery(name = "Attachment.findAll", query = "SELECT a FROM Attachment a"),
     @NamedQuery(name = "Attachment.findByIdAttachment", query = "SELECT a FROM Attachment a WHERE a.idAttachment = :idAttachment"),
-    @NamedQuery(name = "Attachment.findByName", query = "SELECT a FROM Attachment a WHERE a.name = :name"),
-    @NamedQuery(name = "Attachment.findByAttachmentPath", query = "SELECT a FROM Attachment a WHERE a.attachmentPath = :attachmentPath")})
+    @NamedQuery(name = "Attachment.findByName", query = "SELECT a FROM Attachment a WHERE a.name = :name")})
 public class Attachment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,20 +49,29 @@ public class Attachment implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
-    @Column(nullable = false, length = 45)
+    @Size(min = 1, max = 200)
+    @Column(nullable = false, length = 200)
     private String name;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "attachment_path", nullable = false, length = 100)
+    @Size(min = 1, max = 400)
+    @Column(name = "attachment_path", nullable = false, length = 400)
     @Getter @Setter
     private String attachmentPath;
+    
+   
     
     @JoinColumn(name = "mail_id", referencedColumnName = "id_mail", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @Getter @Setter
     private Mail mail;
+    
+    @JoinColumn(name = "attach_type_id", referencedColumnName = "id_attach_type", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    private AttachType attachType;
 
     public Attachment() {
     }

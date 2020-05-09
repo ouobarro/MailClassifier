@@ -5,7 +5,9 @@
  */
 package info.univAngers.mailClassifier.dao;
 
+import info.univAngers.mailClassifier.dto.BroadcastListDto;
 import info.univAngers.mailClassifier.model.BroadcastList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -39,7 +41,18 @@ public class BroadcastListDaoImp implements BroadcastListDaoInterface {
         try{
             return (BroadcastList) em.createQuery("SELECT b FROM BroadcastList b WHERE b.libelle = :libelle")
                     .setParameter("libelle", broadcastListLibelle).getSingleResult();
-        }catch(Exception ex){
+        } catch(NoResultException nrex){
+            return null;
+        } catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<BroadcastList> getAllBroadcastList() throws Exception {
+        try {
+            return em.createQuery("SELECT b FROM BroadcastList b").getResultList();
+        } catch (Exception ex) {
             throw ex;
         }
     }

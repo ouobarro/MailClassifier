@@ -13,9 +13,13 @@ import java.util.List;
  * @author barro
  */
 public interface PersonDaoInterface {
-    public List<Person> getAllPerson() throws Exception;   
+    
+    public List<Person> getAllPerson() throws Exception;
+    
     public Person getPersonById(Integer idPerson) throws Exception;
-    public Person getPersonByEmailAddress(String emailAddress) throws Exception;
+    
+    public Person getPersonByName(String name) throws Exception;
+    
     public void insertPerson(Person person) throws Exception;
     
 }

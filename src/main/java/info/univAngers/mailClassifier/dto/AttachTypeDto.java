@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package info.univAngers.mailClassifier.service;
+package info.univAngers.mailClassifier.dto;
 
-import info.univAngers.mailClassifier.dto.LinkDto;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author barro
  */
-public interface LinkServiceInterface {
+public class AttachTypeDto {
     
-    public List<LinkDto> getAllLink() throws Exception;
+    @Getter @Setter
+    private Integer id;
     
+    @Getter @Setter
+    private String attachTypeName;
 }

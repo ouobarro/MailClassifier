@@ -5,13 +5,17 @@
  */
 package info.univAngers.mailClassifier.service;
 
+import info.univAngers.mailClassifier.dto.AttachTypeDto;
 import info.univAngers.mailClassifier.dto.AttachmentDto;
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
+import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.LinkDto;
 import info.univAngers.mailClassifier.dto.MailDto;
 import info.univAngers.mailClassifier.dto.PersonDto;
+import info.univAngers.mailClassifier.model.AttachType;
 import info.univAngers.mailClassifier.model.Attachment;
 import info.univAngers.mailClassifier.model.BroadcastList;
+import info.univAngers.mailClassifier.model.Email;
 import info.univAngers.mailClassifier.model.Link;
 import info.univAngers.mailClassifier.model.Mail;
 import info.univAngers.mailClassifier.model.Person;
@@ -30,7 +34,6 @@ public class EntityDtoConverter {
         mailDto.setSubject(mail.getSubject());
         mailDto.setContent(mail.getContent());
         mailDto.setSendDate(mail.getSendDate());
-        mailDto.setSignature(mail.getSignature());
         
         List<AttachmentDto> attachDtoList = new ArrayList<>();
         if(mail.getAttachmentList()!= null){
@@ -48,31 +51,37 @@ public class EntityDtoConverter {
         }
         mailDto.setLinkListDto(linkDtoList);
         
-        if(mail.getBroadcastList() != null){
-            mailDto.setBclDto(convertToDto(mail.getBroadcastList()));
+        if(mail.getEmail() != null){
+            mailDto.setEmailDto(convertToDto(mail.getEmail()));
         }
         
-        if(mail.getSender()!= null){
-            mailDto.setSender(convertToDto(mail.getSender()));
-        }
         
-        List<PersonDto> receiverDtoList = new ArrayList<>();
+        
+        List<EmailDto> receiverDtoList = new ArrayList<>();
         if(mail.getReceiverList()!= null){
-            for(Person person : mail.getReceiverList()){
-                receiverDtoList.add(convertToDto(person));
+            for(Email email : mail.getReceiverList()){
+                receiverDtoList.add(convertToDto(email));
             }
         }
         mailDto.setReceiverList(receiverDtoList);
         
-        List<PersonDto> receiverCcDtoList = new ArrayList<>();
+        List<EmailDto> receiverCcDtoList = new ArrayList<>();
         if(mail.getReceiverCcList()!= null){
-            for(Person person : mail.getReceiverCcList()){
-                receiverCcDtoList.add(convertToDto(person));
+            for(Email email : mail.getReceiverCcList()){
+                receiverCcDtoList.add(convertToDto(email));
             }
         }
         mailDto.setReceiverCcList(receiverCcDtoList);
         
         return mailDto;
+    }
+    
+    public static AttachTypeDto convertToDto(AttachType attachType){
+        AttachTypeDto attachTypeDto = new AttachTypeDto();
+        attachTypeDto.setId(attachType.getIdAttachType());
+        attachTypeDto.setAttachTypeName(attachType.getAttachTypeName());
+        
+        return attachTypeDto;
     }
     
     public static AttachmentDto convertToDto(Attachment attach){
@@ -81,6 +90,10 @@ public class EntityDtoConverter {
         attachDto.setName(attach.getName());
         attachDto.setAttachPath(attach.getAttachmentPath());
         attachDto.setMailId(attach.getMail().getIdMail());
+        if(attach.getAttachType() != null){
+            attachDto.setAttachType(convertToDto(attach.getAttachType()));
+        }
+        
         
         return attachDto;
     }
@@ -88,8 +101,6 @@ public class EntityDtoConverter {
     public static LinkDto convertToDto(Link link){
         LinkDto linkDto = new LinkDto();
         linkDto.setId(link.getIdLink());
-        linkDto.setLibelle(link.getLibelle());
-        linkDto.setTarget(link.getTargetLink());
         linkDto.setUrl(link.getUrlLink());
         linkDto.setMailId(link.getMail().getIdMail());
         
@@ -98,7 +109,7 @@ public class EntityDtoConverter {
     
     public static BroadcastListDto convertToDto(BroadcastList bcl){
         BroadcastListDto bclDto = new BroadcastListDto();
-        bclDto.setId(bcl.getIdbroadcastList());
+        bclDto.setId(bcl.getIdBroadcastList());
         bclDto.setLibelle(bcl.getLibelle());
         
         return bclDto;
@@ -108,9 +119,24 @@ public class EntityDtoConverter {
         PersonDto personDto = new PersonDto();
         personDto.setId(person.getIdPerson());
         personDto.setName(person.getName());
-        personDto.setEmailAddress(person.getPersonEmailAddress());
-        
         return personDto;
     }
     
+    
+    public static EmailDto convertToDto(Email email){
+        EmailDto emailDto = new EmailDto();
+        emailDto.setId(email.getIdEmail());
+        emailDto.setEAddress(email.getEmailAddress());
+        emailDto.setSignature(email.getEmailSignature());
+        
+        if(email.getPerson() != null){
+            emailDto.setPersonDto(convertToDto(email.getPerson()));
+        }
+        
+        if(email.getBroadcastList() != null){
+            emailDto.setBclDto(convertToDto(email.getBroadcastList()));
+        }
+        
+        return emailDto;
+    }  
 }

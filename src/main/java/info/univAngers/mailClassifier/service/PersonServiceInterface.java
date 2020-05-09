@@ -19,7 +19,7 @@ public interface PersonServiceInterface {
     
     public PersonDto getPersonById(Integer id) throws Exception;
     
-    public PersonDto getPersonByEmailAddress(String emailAddress) throws Exception;
+    public PersonDto getPersonByName(String name) throws Exception;
     
     public void insertPerson(Person person) throws Exception;
     

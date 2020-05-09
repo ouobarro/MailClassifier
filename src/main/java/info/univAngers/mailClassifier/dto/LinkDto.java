@@ -21,11 +21,5 @@ public class LinkDto {
     private String url;
     
     @Getter @Setter
-    private String libelle;
-    
-    @Getter @Setter
-    private String target;
-    
-    @Getter @Setter
     private Integer mailId;
 }

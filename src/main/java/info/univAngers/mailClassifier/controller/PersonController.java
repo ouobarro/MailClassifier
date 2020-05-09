@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author barro
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class PersonController {
     
@@ -45,10 +45,16 @@ public class PersonController {
        
     }
     
-    // Get a Single person
+    // Get a Single person by id
 	@GetMapping("/personnes/{id}")
 	public PersonDto getPersonById(@PathVariable(value = "id") int idPerson) throws Exception {
 		return personService.getPersonById(idPerson);
+	}
+        
+    // Get a single person by name
+        @GetMapping("/personnes/{name}")
+	public PersonDto getPersonByName(@PathVariable(value = "name") String name) throws Exception {
+		return personService.getPersonByName(name);
 	}
     
 }

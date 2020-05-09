@@ -5,7 +5,6 @@
  */
 package info.univAngers.mailClassifier.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -56,70 +55,55 @@ public class Mail implements Serializable {
     @Getter
     private Integer idMail;
 
-    @Size(max = 100)
-    @Column(name = "subject", length = 100)
+    @Size(max = 1000)
+    @Column(name = "subject", length = 1000)
     @Getter
     @Setter
     private String subject;
 
-    @Size(max = 40000)
-    @Column(name = "content", length = 40000)
+    @Column(name = "content", length = 16777200)
     @Getter
     @Setter
     private String content;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "send_date", nullable = false)
+    @Column(name = "send_date")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Getter
     @Setter
     private Date sendDate;
-    
-    @Size(max = 200)
-    @Column(name = "signature", length = 200)
-    @Getter
-    @Setter
-    private String signature;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mail", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "mail", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @Getter
     @Setter
     private List<Attachment> attachmentList;
 
-    @JoinColumn(name = "broadcast_list_id", referencedColumnName = "id_broadcast_list", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
-    @Getter
-    @Setter
-    private BroadcastList broadcastList;
-
-    @JoinColumn(name = "sender_id", referencedColumnName = "id_person", nullable = false)
+    @JoinColumn(name = "email_id", referencedColumnName = "id_email", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
-    private Person sender;
+    private Email email;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "person_mail_to",
+    @JoinTable(name = "receiver_to",
             joinColumns = @JoinColumn(name = "mail_id"),
-            inverseJoinColumns = @JoinColumn(name = "person_id")
+            inverseJoinColumns = @JoinColumn(name = "email_id")
     )
     @Getter @Setter
-    private List<Person> receiverList;
+    private List<Email> receiverList;
     
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "person_mail_cc",
+    @JoinTable(name = "receiver_cc",
             joinColumns = @JoinColumn(name = "mail_id"),
-            inverseJoinColumns = @JoinColumn(name = "person_id")
+            inverseJoinColumns = @JoinColumn(name = "email_id")
     )
     @Getter @Setter
-    private List<Person> receiverCcList;
+    private List<Email> receiverCcList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mail", fetch = FetchType.LAZY)
-    @Getter
-    @Setter
+    @OneToMany(mappedBy = "mail", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter @Setter
     private List<Link> linkList;
 
     public Mail() {

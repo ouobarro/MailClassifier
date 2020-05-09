@@ -5,15 +5,16 @@
  */
 package info.univAngers.mailClassifier.service;
 
-import info.univAngers.mailClassifier.dto.LinkDto;
+import info.univAngers.mailClassifier.dto.AttachTypeDto;
+import info.univAngers.mailClassifier.model.AttachType;
 import java.util.List;
 
 /**
  *
  * @author barro
  */
-public interface LinkServiceInterface {
+public interface AttachTypeServiceInterface {
     
-    public List<LinkDto> getAllLink() throws Exception;
+    public List<AttachTypeDto> getAllAttachType() throws Exception;
     
 }

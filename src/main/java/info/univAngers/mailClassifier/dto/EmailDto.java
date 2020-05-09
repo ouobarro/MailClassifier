@@ -14,15 +14,24 @@ import lombok.Setter;
  *
  * @author barro
  */
-public class PersonDto {
+public class EmailDto {
     
     @Getter @Setter
     private Integer id;
     
     @Getter @Setter
-    private String name;
+    private String eAddress;
+    
+    @Getter @Setter
+    private String signature;
+    
+    @Getter @Setter
+    private PersonDto personDto;
+    
+    @Getter @Setter
+    private BroadcastListDto bclDto;
     
     @Getter @Setter
     @JsonIgnore
-    private List<EmailDto> emailListDto;  
+    private List<MailDto> mailDtoList;
 }

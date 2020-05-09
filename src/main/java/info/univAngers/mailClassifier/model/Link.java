@@ -34,9 +34,7 @@ import lombok.Setter;
 @NamedQueries({
     @NamedQuery(name = "Link.findAll", query = "SELECT l FROM Link l"),
     @NamedQuery(name = "Link.findByIdLink", query = "SELECT l FROM Link l WHERE l.idLink = :idLink"),
-    @NamedQuery(name = "Link.findByUrlLink", query = "SELECT l FROM Link l WHERE l.urlLink = :urlLink"),
-    @NamedQuery(name = "Link.findByLibelle", query = "SELECT l FROM Link l WHERE l.libelle = :libelle"),
-    @NamedQuery(name = "Link.findByTargetLink", query = "SELECT l FROM Link l WHERE l.targetLink = :targetLink")})
+    @NamedQuery(name = "Link.findByUrlLink", query = "SELECT l FROM Link l WHERE l.urlLink = :urlLink")})
 public class Link implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,20 +48,10 @@ public class Link implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 200)
-    @Column(name = "url_link", nullable = false, length = 200)
+    @Size(min = 1, max = 400)
+    @Column(name = "url_link", nullable = false, length = 400)
     @Getter @Setter
     private String urlLink;
-    
-    @Size(max = 100)
-    @Column(name = "libelle", length = 100)
-    @Getter @Setter
-    private String libelle;
-            
-    @Size(min = 1, max = 200)
-    @Column(name = "target_link", length = 200)
-    @Getter @Setter
-    private String targetLink;
     
     @JoinColumn(name = "mail_id", referencedColumnName = "id_mail", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

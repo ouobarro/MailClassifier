@@ -29,23 +29,19 @@ public class MailDto {
     private Date sendDate;
     
     @Getter @Setter
-    private String signature;
-    
-    @Getter @Setter
-    private BroadcastListDto bclDto;
-    
-    @Getter @Setter
     private List<AttachmentDto> attachListDto;
     
     @Getter @Setter
     private List<LinkDto> linkListDto;
     
     @Getter @Setter
-    private PersonDto sender;
+    private EmailDto emailDto;
+    
+   
+    @Getter @Setter
+    private List<EmailDto> receiverList;
     
     @Getter @Setter
-    private List<PersonDto> receiverList;
-    
-    @Getter @Setter
-    private List<PersonDto> receiverCcList;
+    private List<EmailDto> receiverCcList;
+
 }

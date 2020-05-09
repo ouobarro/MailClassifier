@@ -18,4 +18,8 @@ public interface LinkDaoInterface {
     public List<Link> getLinkByMail(Integer idMail) throws Exception;
     
     public Link getLinkByIdLink(Integer idLink) throws Exception;
+    
+     public Link getLinkByUrlLink(String urlLink) throws Exception;
+    
+    public List<Link> getAllLink() throws Exception;
 }

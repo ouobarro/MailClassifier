@@ -43,10 +43,10 @@ public class PersonDaoImp implements PersonDaoInterface {
     }
     
     @Override
-    public Person getPersonByEmailAddress(String emailAddress) throws Exception {
+    public Person getPersonByName(String name) throws Exception {
         try {
-            return (Person) em.createQuery("SELECT p FROM Person p where p.personEmailAddress = :emailAddress")
-                    .setParameter("emailAddress", emailAddress).getSingleResult();
+            return (Person) em.createQuery("SELECT p FROM Person p where p.name = :name")
+                    .setParameter("name", name).getSingleResult();
         } catch (NoResultException nrex) {
             return null;
         } catch (Exception ex) {

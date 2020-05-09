@@ -23,7 +23,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -43,16 +44,19 @@ public class BroadcastList implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_broadcast_list", nullable = false)
+    @Getter
     private Integer idBroadcastList;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(nullable = false, length = 45)
+    @Getter @Setter
     private String libelle;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "broadcastList", fetch = FetchType.LAZY)
-    private List<Mail> mailList;
+    @Getter @Setter
+    private List<Email> emailList;
 
     public BroadcastList() {
     }
@@ -64,31 +68,6 @@ public class BroadcastList implements Serializable {
     public BroadcastList(Integer idBroadcastList, String libelle) {
         this.idBroadcastList = idBroadcastList;
         this.libelle = libelle;
-    }
-
-    public Integer getIdbroadcastList() {
-        return idBroadcastList;
-    }
-
-    public void setIdbroadcastList(Integer idBroadcastList) {
-        this.idBroadcastList = idBroadcastList;
-    }
-
-    public String getLibelle() {
-        return libelle;
-    }
-
-    public void setLibelle(String libelle) {
-        this.libelle = libelle;
-    }
-
-    @XmlTransient
-    public List<Mail> getMailList() {
-        return mailList;
-    }
-
-    public void setMailList(List<Mail> mailList) {
-        this.mailList = mailList;
     }
 
     @Override

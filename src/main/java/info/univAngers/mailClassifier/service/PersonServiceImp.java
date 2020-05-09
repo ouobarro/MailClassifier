@@ -56,9 +56,9 @@ public class PersonServiceImp implements PersonServiceInterface {
     }
     
     @Override
-    public PersonDto getPersonByEmailAddress(String emailAddress) throws Exception {
+    public PersonDto getPersonByName(String name) throws Exception {
         try{
-            Person person = personDao.getPersonByEmailAddress(emailAddress);
+            Person person = personDao.getPersonByName(name);
             if(person != null){
                 return EntityDtoConverter.convertToDto(person);
             }else{
@@ -76,8 +76,5 @@ public class PersonServiceImp implements PersonServiceInterface {
         }catch(Exception ex){
            throw ex;    
         }
-    }
-
-    
-    
+    }   
 }

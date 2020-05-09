@@ -17,6 +17,10 @@ public interface AttachmentDaoInterface {
     
     public Attachment getAttachmentByIdAttachment(Integer idAttachment) throws Exception;
     
+    public List<Attachment> getAllAttachment() throws Exception;
+    
     public List<Attachment> getAttachmentByMail(Integer idMail) throws Exception;
+    
+    public void insertAttachment(Attachment attachment) throws Exception;
     
 }

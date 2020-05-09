@@ -18,7 +18,7 @@ public interface MailServiceInterface {
     
     public List<MailDto> getAllMail() throws Exception;
     
-    public List<MailDto> getMailByPerson(Integer idPerson) throws Exception;
+    public List<MailDto> getMailByEmail(Integer idEmail) throws Exception;
     
     public void insertMail(Mail mail) throws Exception;
     

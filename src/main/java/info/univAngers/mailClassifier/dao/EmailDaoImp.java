@@ -5,7 +5,7 @@
  */
 package info.univAngers.mailClassifier.dao;
 
-import info.univAngers.mailClassifier.model.Mail;
+import info.univAngers.mailClassifier.model.Email;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -17,30 +17,18 @@ import org.springframework.stereotype.Repository;
  *
  * @author barro
  */
+
 @Repository
 @Transactional
-public class MailDaoImp implements MailDaoInterface {
+public class EmailDaoImp implements EmailDaoInterface {
     
     @PersistenceContext
     private transient EntityManager em;
-    
-    @Override
-    public Mail getMailById(Integer idMail) throws Exception {
-        try{
-            return em.find(Mail.class, idMail);
-        }catch(NoResultException ex){
-            return null;
-        } catch(Exception ex){
-            throw ex;
-        }
-    }
 
     @Override
-    public List<Mail> getMailByEmail(Integer idEmail) throws Exception {
+    public Email getEmailById(Integer idEmail) throws Exception {
         try{
-            return em.createQuery("SELECT m FROM Mail m where m.email.idEmail = :idEmail")
-                    .setParameter("idEmail", idEmail).getResultList();
-            
+            return em.find(Email.class, idEmail);
         }catch(NoResultException ex){
             return null;
         } catch(Exception ex){
@@ -49,9 +37,10 @@ public class MailDaoImp implements MailDaoInterface {
     }
     
     @Override
-    public List<Mail> getAllMail() throws Exception {
+    public Email getEmailByAdress(String adress) throws Exception {
         try{
-            return em.createQuery("SELECT m FROM Mail m").getResultList();
+            return (Email) em.createQuery("SELECT e FROM Email e WHERE e.emailAddress = :adress")
+                    .setParameter("adress", adress).getSingleResult();
         } catch(NoResultException ex){
             return null;
         }  catch(Exception ex){
@@ -60,9 +49,20 @@ public class MailDaoImp implements MailDaoInterface {
     }
 
     @Override
-    public void insertMail(Mail mail) throws Exception {
+    public List<Email> getAllEmail() throws Exception {
+        try{
+            return em.createQuery("SELECT e FROM Email e").getResultList();
+        } catch(NoResultException ex){
+            return null;
+        }  catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    @Override
+    public void insertEmail(Email email) throws Exception {
         try {
-            em.persist(mail);
+            em.persist(email);
             em.flush();
         } catch (Exception ex) {
             throw ex;

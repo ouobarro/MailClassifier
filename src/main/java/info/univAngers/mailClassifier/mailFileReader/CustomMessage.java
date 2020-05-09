@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CustomMessage implements Serializable {
     private MimeMessage mimeMessage;
     private MimeMessageParser mimeMessageParser;
     
-        
+    
     public CustomMessage(String fileName) {
         this.fileName = fileName;
         this.props = new Properties();
@@ -138,6 +139,26 @@ public class CustomMessage implements Serializable {
         }
         return date;
     }
+    
+    public List<Attach> getFileAttach(){
+        List<Attach> attachList = new ArrayList<>();
+        try {
+            attachList = MimeMessageUtil.getMessageAttach(mimeMessage);
+        } catch (MessagingException | IOException ex) {
+            System.out.println(">> Erreur: ATTACHMENT");
+        }
+        return attachList;
+    }
+    
+    public List<String> getMailLinks(){
+        try{
+            return MimeMessageUtil.getMailLinks(this.mimeMessage);
+        } catch(Exception ex){
+            System.out.println(">> Erreur: LINKS");
+        }
+        
+        return new ArrayList<>();
+    }
 
     @Override
     public String toString() {
@@ -148,6 +169,7 @@ public class CustomMessage implements Serializable {
                 + "\nCc: "+Arrays.toString(getCc())
                 + "\nOn: "+getSendDate().toString()
                 + "\nContent:\n "+getContent()
+                + "\nAttach: \n"+getFileAttach()
                 +'}';
     }
     

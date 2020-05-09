@@ -38,7 +38,7 @@ import lombok.Setter;
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByIdperson", query = "SELECT p FROM Person p WHERE p.idPerson = :idPerson"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
-    @NamedQuery(name = "Person.findByPersonEmailAddress", query = "SELECT p FROM Person p WHERE p.personEmailAddress = :personEmailAddress")})
+    })
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,42 +54,15 @@ public class Person implements Serializable {
     @Getter @Setter
     private String name;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "person_email_address", length = 45)
-    private String personEmailAddress;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sender", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", fetch = FetchType.LAZY)
     @Getter @Setter
-    private List<Mail> mailList;
-    
-    @ManyToMany(mappedBy = "receiverList")
-    @Getter @Setter
-    private List<Mail> receivedMailList;
-
-    @ManyToMany(mappedBy = "receiverCcList")
-    @Getter @Setter
-    private List<Mail> receivedCcMailList;
+    private List<Email> emailList;
     
     public Person() {
     }
 
     public Person(Integer idPerson) {
         this.idPerson = idPerson;
-    }
-
-    public Person(Integer idPerson, String personEmailAddress) {
-        this.idPerson = idPerson;
-        this.personEmailAddress = personEmailAddress;
-    }
-
-    public String getPersonEmailAddress() {
-        return personEmailAddress;
-    }
-
-    public void setPersonEmailAddress(String personEmailAddress) {
-        this.personEmailAddress = personEmailAddress;
     }
 
 

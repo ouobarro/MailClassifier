@@ -8,6 +8,7 @@ package info.univAngers.mailClassifier.dao;
 import info.univAngers.mailClassifier.model.Link;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,9 @@ public class LinkDaoImp implements LinkDaoInterface{
         try{
             return em.createQuery("SELECT l FROM Link l WHERE l.mail.idMail = :idMail")
                     .setParameter("idMail", idMail).getResultList();
-        } catch(Exception ex){
+        } catch(NoResultException ex){
+            return null;
+        }catch(Exception ex){
             throw ex;
         }
     }
@@ -37,9 +40,34 @@ public class LinkDaoImp implements LinkDaoInterface{
     public Link getLinkByIdLink(Integer idLink) throws Exception {
         try{
             return em.find(Link.class, idLink);
-        } catch(Exception ex){
+        } catch(NoResultException ex){
+            return null;
+        }catch(Exception ex){
             throw ex;
         }
     }
     
+    
+     @Override
+    public Link getLinkByUrlLink(String urlLink) throws Exception {
+        try{
+            return (Link) em.createQuery("SELECT l FROM Link l WHERE l.urlLink = :urlLink")
+                    .setParameter("urlLink", urlLink).getSingleResult();
+        }catch(NoResultException ex){
+            return null;
+        } catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<Link> getAllLink() throws Exception {
+        try{
+            return em.createQuery("SELECT l FROM Link l").getResultList();
+        } catch(NoResultException ex){
+            return null;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
 }

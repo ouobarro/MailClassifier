@@ -5,7 +5,7 @@
  */
 package info.univAngers.mailClassifier.dao;
 
-import info.univAngers.mailClassifier.model.Mail;
+import info.univAngers.mailClassifier.model.AttachType;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,15 +19,27 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Transactional
-public class MailDaoImp implements MailDaoInterface {
+public class AttachTypeDaoImp implements AttachTypeDaoInterface{
     
     @PersistenceContext
     private transient EntityManager em;
+
+    @Override
+    public AttachType getAttachTypeById(Integer idAttachType) throws Exception {
+        try{
+            return em.find(AttachType.class, idAttachType);
+        }catch(NoResultException ex){
+            return null;
+        } catch(Exception ex){
+            throw ex;
+        }
+    }
     
     @Override
-    public Mail getMailById(Integer idMail) throws Exception {
+    public AttachType getAttachTypeByName(String typeName) throws Exception {
         try{
-            return em.find(Mail.class, idMail);
+            return (AttachType) em.createQuery("SELECT a FROM AttachType a WHERE a.attachTypeName = :typeName")
+                    .setParameter("typeName", typeName).getSingleResult();
         }catch(NoResultException ex){
             return null;
         } catch(Exception ex){
@@ -36,33 +48,19 @@ public class MailDaoImp implements MailDaoInterface {
     }
 
     @Override
-    public List<Mail> getMailByEmail(Integer idEmail) throws Exception {
+    public List<AttachType> getAllAttachType() throws Exception {
         try{
-            return em.createQuery("SELECT m FROM Mail m where m.email.idEmail = :idEmail")
-                    .setParameter("idEmail", idEmail).getResultList();
-            
-        }catch(NoResultException ex){
-            return null;
-        } catch(Exception ex){
-            throw ex;
-        }
-    }
-    
-    @Override
-    public List<Mail> getAllMail() throws Exception {
-        try{
-            return em.createQuery("SELECT m FROM Mail m").getResultList();
+            return em.createQuery("SELECT a FROM AttachType a").getResultList();
         } catch(NoResultException ex){
             return null;
         }  catch(Exception ex){
             throw ex;
         }
     }
-
     @Override
-    public void insertMail(Mail mail) throws Exception {
+    public void insertAttachType(AttachType attachType) throws Exception {
         try {
-            em.persist(mail);
+            em.persist(attachType);
             em.flush();
         } catch (Exception ex) {
             throw ex;

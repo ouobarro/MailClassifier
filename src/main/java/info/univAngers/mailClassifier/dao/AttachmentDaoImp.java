@@ -43,5 +43,24 @@ public class AttachmentDaoImp implements AttachmentDaoInterface {
             throw ex;
         }
     }
+
+    @Override
+    public List<Attachment> getAllAttachment() throws Exception {
+        try {
+            return em.createQuery("SELECT a FROM Attachment a").getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Override
+    public void insertAttachment(Attachment attachment) throws Exception {
+         try {
+            em.persist(attachment);
+            em.flush();
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
     
 }

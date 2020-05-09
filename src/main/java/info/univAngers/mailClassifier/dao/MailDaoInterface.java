@@ -18,7 +18,7 @@ public interface MailDaoInterface {
     
     public List<Mail> getAllMail() throws Exception;
     
-    public List<Mail> getMailByPerson(Integer idPerson) throws Exception;
+    public List<Mail> getMailByEmail(Integer idEmail) throws Exception;
     
     public void insertMail(Mail mail) throws Exception;
     

@@ -26,4 +26,7 @@ public class AttachmentDto {
     @Getter @Setter
     private Integer mailId;
     
+    @Getter @Setter
+    private AttachTypeDto attachType;
+    
 }

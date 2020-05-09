@@ -8,6 +8,8 @@ package info.univAngers.mailClassifier.service;
 import info.univAngers.mailClassifier.dao.BroadcastListDaoInterface;
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
 import info.univAngers.mailClassifier.model.BroadcastList;
+import java.util.ArrayList;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,22 @@ public class BroadcastListServiceImp implements BroadcastListServiceInterface{
             }
         }catch(Exception ex){
             throw ex;
+        }
+    }
+
+    @Override
+    public List<BroadcastListDto> getAllBroadcastList() throws Exception {
+        try{
+            List<BroadcastList> broadcastList = broadcastListDao.getAllBroadcastList();
+            List<BroadcastListDto> broadcastListDto = new ArrayList<>();
+            if(broadcastList != null){
+                for(BroadcastList bcl: broadcastList){
+                    broadcastListDto.add(EntityDtoConverter.convertToDto(bcl));
+                }
+            }
+            return broadcastListDto;
+        } catch(Exception ex){
+           throw ex;    
         }
     }
     
