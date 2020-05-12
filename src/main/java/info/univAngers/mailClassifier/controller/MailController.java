@@ -59,10 +59,12 @@ public class MailController {
     @Autowired 
     private BroadcastListServiceInterface broadcastListService;
 
+    
     @GetMapping("/mail-read/{dirPath}")
     public List<String> testMailFileRead(@PathVariable("dirPath") String dirPath) {
         System.out.println("================== ECHO FILE READING!!! ==================");
         String absolutePath = "/home/barro/NetBeansProjects/president_2010/"+dirPath;
+        
         try {
             List<String> fileListName = new ArrayList<>();
             List<File> fileList = Util.getDirectoryFiles(absolutePath);
@@ -70,7 +72,7 @@ public class MailController {
                 for(File file: fileList){
                     CustomMessage message = new CustomMessage(file.getAbsolutePath());
                     //CustomMessage message = new CustomMessage("375");
-                    //mailService.insertMail(message);
+                    mailService.insertMail(message);
                     fileListName.add(file.getAbsolutePath());
                 }
             }
@@ -81,6 +83,7 @@ public class MailController {
         }
 
     }
+
 
     @GetMapping("/mails")
     public List<MailDto> getAllMail() throws Exception {

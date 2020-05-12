@@ -119,6 +119,15 @@ public class EntityDtoConverter {
         PersonDto personDto = new PersonDto();
         personDto.setId(person.getIdPerson());
         personDto.setName(person.getName());
+        
+        List<EmailDto> emailDtoList = new ArrayList<>();
+        if(person.getEmailList() != null){
+            for(Email email : person.getEmailList()){
+                emailDtoList.add(convertToDto(email));
+            }
+        }
+        personDto.setEmailListDto(emailDtoList);
+        
         return personDto;
     }
     
