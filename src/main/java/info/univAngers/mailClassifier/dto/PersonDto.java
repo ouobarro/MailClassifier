@@ -23,6 +23,6 @@ public class PersonDto {
     private String name;
     
     @Getter @Setter
-    
+    @JsonIgnore
     private List<EmailDto> emailListDto;  
 }
