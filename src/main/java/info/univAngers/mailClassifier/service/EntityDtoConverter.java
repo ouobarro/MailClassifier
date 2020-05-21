@@ -12,6 +12,7 @@ import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.LinkDto;
 import info.univAngers.mailClassifier.dto.MailDto;
 import info.univAngers.mailClassifier.dto.PersonDto;
+import info.univAngers.mailClassifier.dto.PersonMoralDto;
 import info.univAngers.mailClassifier.model.AttachType;
 import info.univAngers.mailClassifier.model.Attachment;
 import info.univAngers.mailClassifier.model.BroadcastList;
@@ -19,6 +20,7 @@ import info.univAngers.mailClassifier.model.Email;
 import info.univAngers.mailClassifier.model.Link;
 import info.univAngers.mailClassifier.model.Mail;
 import info.univAngers.mailClassifier.model.Person;
+import info.univAngers.mailClassifier.model.PersonMoral;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,6 @@ public class EntityDtoConverter {
         if(mail.getEmail() != null){
             mailDto.setEmailDto(convertToDto(mail.getEmail()));
         }
-        
         
         
         List<EmailDto> receiverDtoList = new ArrayList<>();
@@ -120,6 +121,13 @@ public class EntityDtoConverter {
         personDto.setId(person.getIdPerson());
         personDto.setName(person.getName());
         
+        return personDto;
+    }
+    
+    public static PersonMoralDto convertToDto(PersonMoral person){
+        PersonMoralDto personDto = new PersonMoralDto();
+        personDto.setId(person.getIdPersonM());
+        personDto.setName(person.getName());
         
         return personDto;
     }

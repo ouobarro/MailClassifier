@@ -22,4 +22,6 @@ public interface EmailDaoInterface {
         
     public void insertEmail(Email email) throws Exception;
     
+    public Integer countEmail() throws Exception;
+    
 }

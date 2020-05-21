@@ -9,6 +9,7 @@ package info.univAngers.mailClassifier.controller;
 import info.univAngers.mailClassifier.dto.AttachTypeDto;
 import info.univAngers.mailClassifier.dto.AttachmentDto;
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
+import info.univAngers.mailClassifier.dto.DataCountDto;
 import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.LinkDto;
 import info.univAngers.mailClassifier.dto.MailDto;
@@ -72,7 +73,7 @@ public class MailController {
                 for(File file: fileList){
                     CustomMessage message = new CustomMessage(file.getAbsolutePath());
                     //CustomMessage message = new CustomMessage("375");
-                    mailService.insertMail(message);
+                    //mailService.insertMail(message);
                     fileListName.add(file.getAbsolutePath());
                 }
             }
@@ -95,11 +96,49 @@ public class MailController {
         }
     }
     
-    @GetMapping("/mails/email/{idEmail}")
-    public List<MailDto> getMailByEmail(Integer idEmail) throws Exception {
+    // Get a Single person by id
+    @GetMapping("/mails/{id}")
+    public MailDto getMailById(@PathVariable(value = "id") Integer idMail) throws Exception {
+        return mailService.getMailById(idMail);
+    }
+    
+    @GetMapping("/data-count")
+    public DataCountDto countData() throws Exception {
         
         try{
-            return this.mailService.getMailByEmail(idEmail);
+            return this.mailService.countData();
+        }catch(Exception ex){
+            return null;
+        }
+    }
+    
+    @GetMapping("/mails/email/{idEmail}")
+    public List<MailDto> getMailByEmail(@PathVariable("idEmail") Integer idEmail) throws Exception {
+        
+        try{
+            return this.mailService.getAllSendedMailByEmailId(idEmail);
+        }catch(Exception ex){
+            return null;
+        }
+    }
+    
+    @GetMapping("/mails/received-mail/{idEmail}")
+    public List<MailDto> getReceivedMailByEmailId(
+            @PathVariable("idEmail")
+            Integer idEmail) throws Exception {
+        
+        try{
+            return this.mailService.getAllReceivedMailByEmailId(idEmail);
+        }catch(Exception ex){
+            return null;
+        }
+    }
+    
+    @GetMapping("/mails/received-cc-mail/{idEmail}")
+    public List<MailDto> getReceivedCcMailByEmailId(@PathVariable("idEmail") Integer idEmail) throws Exception {
+        
+        try{
+            return this.mailService.getAllReceivedCcMailByEmailId(idEmail);
         }catch(Exception ex){
             return null;
         }

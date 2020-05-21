@@ -22,4 +22,5 @@ public interface PersonDaoInterface {
     
     public void insertPerson(Person person) throws Exception;
     
+    public Integer countPerson() throws Exception;
 }

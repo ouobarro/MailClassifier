@@ -5,6 +5,7 @@
  */
 package info.univAngers.mailClassifier.controller;
 
+import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.PersonDto;
 import info.univAngers.mailClassifier.model.Person;
 import info.univAngers.mailClassifier.service.PersonServiceInterface;
@@ -27,34 +28,55 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class PersonController {
-    
+
     @Autowired
     private PersonServiceInterface personService;
-    
+
     @GetMapping("/personnes")
-    public List<PersonDto> getAllPerson() throws Exception{
-        
+    public List<PersonDto> getAllPerson() throws Exception {
+
         return personService.getAllPerson();
-        
+
     }
-    
+
     @PostMapping("/personnes")
-    public void insertperson(@Valid @RequestBody Person person) throws Exception{
-        
-            personService.insertPerson(person);
-       
+    public void insertperson(@Valid @RequestBody Person person) throws Exception {
+
+        personService.insertPerson(person);
+
     }
-    
+
     // Get a Single person by id
-	@GetMapping("/personnes/{id}")
-	public PersonDto getPersonById(@PathVariable(value = "id") int idPerson) throws Exception {
-		return personService.getPersonById(idPerson);
-	}
+    @GetMapping("/personnes/{id}")
+    public PersonDto getPersonById(@PathVariable(value = "id") Integer idPerson) throws Exception {
+        try{
+            return personService.getPersonById(idPerson);
+        }catch(Exception ex){
+            return null;
+        }
         
+    }
+
     // Get a single person by name
-        @GetMapping("/personnes/{name}")
-	public PersonDto getPersonByName(@PathVariable(value = "name") String name) throws Exception {
-		return personService.getPersonByName(name);
-	}
+    /*
+    @GetMapping("/personnes/{name}")
+    public PersonDto getPersonByName(@PathVariable(value = "name") String name) throws Exception {
+       try{
+            return personService.getPersonByName(name);
+        }catch(Exception ex){
+            return null;
+        }  
+    }
+    */
     
+    // Get a single person by name
+    @GetMapping("/emails/personne/{idPerson}")
+    public List<EmailDto> getPersonEmailList(@PathVariable(value = "idPerson") Integer idPerson) throws Exception {
+        try{
+            return personService.getPersonEmailList(idPerson);
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
 }

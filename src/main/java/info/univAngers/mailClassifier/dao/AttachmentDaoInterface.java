@@ -23,4 +23,6 @@ public interface AttachmentDaoInterface {
     
     public void insertAttachment(Attachment attachment) throws Exception;
     
+    public Integer countAttachment() throws Exception;
+    
 }

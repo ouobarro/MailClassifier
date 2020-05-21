@@ -68,5 +68,21 @@ public class EmailDaoImp implements EmailDaoInterface {
             throw ex;
         }
     }
+
+    @Override
+    public Integer countEmail() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(e) FROM Email e").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
+    }
     
 }

@@ -9,6 +9,7 @@ import info.univAngers.mailClassifier.model.Attachment;
 import info.univAngers.mailClassifier.model.Link;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -61,6 +62,22 @@ public class AttachmentDaoImp implements AttachmentDaoInterface {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public Integer countAttachment() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(a) FROM Attachment a").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
     }
     
 }

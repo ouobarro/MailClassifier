@@ -70,4 +70,20 @@ public class LinkDaoImp implements LinkDaoInterface{
             throw ex;
         }
     }
+
+    @Override
+    public Integer countLink() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(distinct l.urlLink) FROM Link l").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
+    }
 }

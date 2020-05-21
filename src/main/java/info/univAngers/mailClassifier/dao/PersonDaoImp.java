@@ -27,7 +27,7 @@ public class PersonDaoImp implements PersonDaoInterface {
     @Override
     public List<Person> getAllPerson() {
         try {
-            return em.createQuery("SELECT p FROM Person p").getResultList();
+            return em.createQuery("SELECT p FROM Person p order by p.name").getResultList();
         } catch (Exception ex) {
             throw ex;
         }
@@ -62,6 +62,22 @@ public class PersonDaoImp implements PersonDaoInterface {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public Integer countPerson() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(p) FROM Person p").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
     }
 
     

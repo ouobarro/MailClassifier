@@ -64,6 +64,13 @@ public class Email  implements Serializable {
     @Setter
     private Person person;
     
+    @JoinColumn(name = "person_moral_id", referencedColumnName = "id_person_moral", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    private PersonMoral personM;
+    
     @JoinColumn(name = "broadcast_list_id", referencedColumnName = "id_broadcast_list", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
@@ -86,7 +93,7 @@ public class Email  implements Serializable {
     public Email() {
     }
 
-    public Email(String emailAddrtess, String emailSignature) {
+    public Email(String emailAddress, String emailSignature) {
         this.emailAddress = emailAddress;
         this.emailSignature = emailSignature;
     }

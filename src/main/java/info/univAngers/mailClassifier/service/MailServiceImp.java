@@ -5,12 +5,16 @@
  */
 package info.univAngers.mailClassifier.service;
 
+import static ch.qos.logback.core.util.OptionHelper.isEmpty;
 import info.univAngers.mailClassifier.dao.AttachTypeDaoInterface;
+import info.univAngers.mailClassifier.dao.AttachmentDaoInterface;
 import info.univAngers.mailClassifier.dao.BroadcastListDaoInterface;
 import info.univAngers.mailClassifier.dao.EmailDaoInterface;
 import info.univAngers.mailClassifier.dao.LinkDaoInterface;
 import info.univAngers.mailClassifier.dao.MailDaoInterface;
 import info.univAngers.mailClassifier.dao.PersonDaoInterface;
+import info.univAngers.mailClassifier.dao.PersonMoralDaoInterface;
+import info.univAngers.mailClassifier.dto.DataCountDto;
 import info.univAngers.mailClassifier.dto.MailDto;
 import info.univAngers.mailClassifier.mailFileReader.Attach;
 import info.univAngers.mailClassifier.mailFileReader.CustomMessage;
@@ -21,10 +25,12 @@ import info.univAngers.mailClassifier.model.Email;
 import info.univAngers.mailClassifier.model.Link;
 import info.univAngers.mailClassifier.model.Mail;
 import info.univAngers.mailClassifier.model.Person;
+import info.univAngers.mailClassifier.model.PersonMoral;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +54,16 @@ public class MailServiceImp implements MailServiceInterface {
     private PersonDaoInterface personDao;
 
     @Autowired
+    private PersonMoralDaoInterface personMoralDao;
+
+    @Autowired
     private EmailDaoInterface emailDao;
 
     @Autowired
     private AttachTypeDaoInterface attachTypeDao;
+
+    @Autowired
+    private AttachmentDaoInterface attachDao;
 
     @Autowired
     private LinkDaoInterface linkDao;
@@ -71,11 +83,25 @@ public class MailServiceImp implements MailServiceInterface {
             throw ex;
         }
     }
+    
+    @Override
+    public MailDto getMailById(Integer id) throws Exception {
+        try{
+            Mail mail = mailDao.getMailById(id);
+            if(mail != null){
+                return EntityDtoConverter.convertToDto(mail);
+            }else{
+                return null;
+            }
+        }catch(Exception ex){
+           throw ex;    
+        }
+    }
 
     @Override
-    public List<MailDto> getMailByEmail(Integer idEmail) throws Exception {
+    public List<MailDto> getAllSendedMailByEmailId(Integer idEmail) throws Exception {
         try {
-            List<Mail> mailList = mailDao.getMailByEmail(idEmail);
+            List<Mail> mailList = mailDao.getAllSendedMailByEmailId(idEmail);
             List<MailDto> mailDtoList = new ArrayList<>();
             if (mailList != null) {
                 for (Mail mail : mailList) {
@@ -86,6 +112,72 @@ public class MailServiceImp implements MailServiceInterface {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public List<MailDto> getAllReceivedMailByEmailId(Integer idEmail) throws Exception {
+        try {
+            Email email = emailDao.getEmailById(idEmail);
+            List<Mail> mailList = null;
+            if (email != null) {
+                mailList = email.getReceivedMailList();
+            }
+            List<MailDto> mailDtoList = new ArrayList<>();
+            if (mailList != null) {
+                for (Mail mail : mailList) {
+                    mailDtoList.add(EntityDtoConverter.convertToDto(mail));
+                }
+            }
+            return mailDtoList;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Override
+    public List<MailDto> getAllReceivedCcMailByEmailId(Integer idEmail) throws Exception {
+        try {
+            Email email = emailDao.getEmailById(idEmail);
+            List<Mail> mailList = null;
+            if (email != null) {
+                mailList = email.getReceivedCcMailList();
+            }
+            List<MailDto> mailDtoList = new ArrayList<>();
+            if (mailList != null) {
+                for (Mail mail : mailList) {
+                    mailDtoList.add(EntityDtoConverter.convertToDto(mail));
+                }
+            }
+            return mailDtoList;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Override
+    public DataCountDto countData() throws Exception {
+        DataCountDto dataCount = new DataCountDto();
+        try {
+            Integer attachCount = this.attachDao.countAttachment();
+            Integer bclCount = this.broadcastListDao.countBroadcastList();
+            Integer emailCount = this.emailDao.countEmail();
+            Integer personCount = this.personDao.countPerson();
+            Integer mailCount = this.mailDao.countMail();
+            Integer linkCount = this.linkDao.countLink();
+            Integer personMoralCount = this.personMoralDao.countPersonMoral();
+
+            dataCount.setAttachCount(attachCount);
+            dataCount.setBclCount(bclCount);
+            dataCount.setEmailCount(emailCount);
+            dataCount.setPersonCount(personCount);
+            dataCount.setMailCount(mailCount);
+            dataCount.setLinkCount(linkCount);
+            dataCount.setPersonMoralCount(personMoralCount);
+            System.out.println("\t >>>> DATA COUNT OK");
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return dataCount;
     }
 
     @Override
@@ -103,7 +195,7 @@ public class MailServiceImp implements MailServiceInterface {
 
             Mail mail = new Mail();
 
-            mail.setSubject(customMessage.getSubject());
+            mail.setSubject(getClearSubject(customMessage.getSubject()));
             mail.setContent(customMessage.getContent());
             mail.setSendDate(customMessage.getSendDate());
 
@@ -114,15 +206,37 @@ public class MailServiceImp implements MailServiceInterface {
             if (sender == null) {
                 sender = new Email();
                 sender.setEmailAddress(fromAddress.getAddress());
-                if (fromAddress.getPersonal() != null && (!fromAddress.getPersonal().isEmpty())) {
-                    Person person = personDao.getPersonByName(getClearName(fromAddress.getPersonal()));
+                if (isValidName(fromAddress.getPersonal())) {
+                    String clearName = getClearName(fromAddress.getPersonal());
+                    Person person = personDao.getPersonByName(clearName);
                     if (person == null) {
                         person = new Person();
-                        person.setName(getClearName(fromAddress.getPersonal()));
+                        person.setName(clearName);
                     }
                     sender.setPerson(person);
+                } else {    //***********************************************Modifications apportées
+                    String clearName = getClearName(fromAddress.getPersonal());
+                    PersonMoral personM = personMoralDao.getPersonMoralByName(clearName);
+
+                    String clearAddress = getClearName(fromAddress.getAddress());
+                    PersonMoral personMo = personMoralDao.getPersonMoralByName(clearAddress);
+
+                    if (personM == null && clearName != null && !isEmpty(clearName) && !isQuestionMark(clearName)) {
+                        personM = new PersonMoral();
+                        personM.setName(clearName);
+                        sender.setPersonM(personM);
+                    } else if (personM != null) {
+                        sender.setPersonM(personM);
+                    } else if (personMo == null) {
+                        personMo = new PersonMoral();
+                        personMo.setName(clearAddress);
+                        sender.setPersonM(personMo);
+                    } else {
+                        sender.setPersonM(personMo);
+                    }
+
                 }
-                
+
                 // Set Mail BroadcastList
                 String bclName = this.getBcListFromMail(fromAddress.getAddress());
                 if (bclName != null && (!bclName.isEmpty())) {
@@ -134,7 +248,7 @@ public class MailServiceImp implements MailServiceInterface {
                     }
                     sender.setBroadcastList(broadcastList);
                 }
-                
+
             }
 
             mail.setEmail(sender);
@@ -152,13 +266,34 @@ public class MailServiceImp implements MailServiceInterface {
                             email = new Email();
                             email.setEmailAddress(iAddr.getAddress());
 
-                            if (iAddr.getPersonal() != null && (!iAddr.getPersonal().isEmpty())) {
-                                Person person = personDao.getPersonByName(getClearName(iAddr.getPersonal())); // Attention si deux personnes ont le même name
+                            if (isValidName(iAddr.getPersonal())) {
+                                String clearName = getClearName(iAddr.getPersonal());
+                                Person person = personDao.getPersonByName(clearName); // Attention si deux personnes ont le même name
                                 if (person == null) {
                                     person = new Person();
-                                    person.setName(getClearName(iAddr.getPersonal()));
+                                    person.setName(clearName);
                                 }
                                 email.setPerson(person);
+                            } else {  //*******************************Modifications apportées
+                                String clearName = getClearName(iAddr.getPersonal());
+                                PersonMoral personM = personMoralDao.getPersonMoralByName(clearName);
+
+                                String clearAddress = getClearName(iAddr.getAddress());
+                                PersonMoral personMo = personMoralDao.getPersonMoralByName(clearAddress);
+
+                                if (personM == null && clearName != null && !isEmpty(clearName) && !isQuestionMark(clearName)) {
+                                    personM = new PersonMoral();
+                                    personM.setName(clearName);
+                                    email.setPersonM(personM);
+                                } else if (personM != null) {
+                                    email.setPersonM(personM);
+                                } else if (personMo == null) {
+                                    personMo = new PersonMoral();
+                                    personMo.setName(clearAddress);
+                                    email.setPersonM(personMo);
+                                } else {
+                                    email.setPersonM(personMo);
+                                }
                             }
 
                             // Set Mail BroadcastList
@@ -193,15 +328,36 @@ public class MailServiceImp implements MailServiceInterface {
                             email = new Email();
                             email.setEmailAddress(iAddr.getAddress());
 
-                            if (iAddr.getPersonal() != null && (!iAddr.getPersonal().isEmpty())) {
-                                Person person = personDao.getPersonByName(getClearName(iAddr.getPersonal())); // Attention si deux personnes ont le même name
+                            if (isValidName(iAddr.getPersonal())) {
+                                String clearName = getClearName(iAddr.getPersonal());
+                                Person person = personDao.getPersonByName(clearName); // Attention si deux personnes ont le même name
                                 if (person == null) {
                                     person = new Person();
-                                    person.setName(getClearName(iAddr.getPersonal()));
+                                    person.setName(clearName);
                                 }
                                 email.setPerson(person);
+                            } else {  //*********************************Modifications apportées 
+                                String clearName = getClearName(iAddr.getPersonal());
+                                PersonMoral personM = personMoralDao.getPersonMoralByName(clearName);
+
+                                String clearAddress = getClearName(iAddr.getAddress());
+                                PersonMoral personMo = personMoralDao.getPersonMoralByName(clearAddress);
+
+                                if (personM == null && clearName != null && !isEmpty(clearName) && !isQuestionMark(clearName)) {
+                                    personM = new PersonMoral();
+                                    personM.setName(clearName);
+                                    email.setPersonM(personM);
+                                } else if (personM != null) {
+                                    email.setPersonM(personM);
+                                } else if (personMo == null) {
+                                    personMo = new PersonMoral();
+                                    personMo.setName(clearAddress);
+                                    email.setPersonM(personMo);
+                                } else {
+                                    email.setPersonM(personMo);
+                                }
                             }
-                            
+
                             // Set Mail BroadcastList
                             String bclName = this.getBcListFromMail(iAddr.getAddress());
                             if (bclName != null && (!bclName.isEmpty())) {
@@ -264,10 +420,16 @@ public class MailServiceImp implements MailServiceInterface {
             throw ex;
         }
     }
-    
-    protected String getClearName(String name){
-        String cName = name.replaceAll("'", "");
+
+    protected String getClearName(String name) {
+        System.out.println("\t >>> NAME: " + name);
+        if(name != null){
+            String cName = name.replaceAll("'", "");
+        cName = cName.replace("\"", "");
         return cName;
+        }
+        return "";
+        
     }
 
     protected String getBcListFromMail(String email) {
@@ -280,6 +442,89 @@ public class MailServiceImp implements MailServiceInterface {
         }
 
         return bcl;
+    }
+
+    protected String getClearSubject(String subject) {
+
+        String sjt = null;
+        final Matcher matcher = Pattern.compile("\\[president\\]").matcher(subject);
+        if (matcher.find()) {
+            sjt = (subject.substring(matcher.end()).trim());
+        }
+        return sjt;
+    }
+
+    protected boolean isQuestionMark(String name) {
+        final Pattern pattern = Pattern.compile("[\\?+]");
+
+        if (name != null) {
+            if (name.isEmpty()) {
+                return true;
+            } else {
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find()) {
+                    return true;
+                }
+                return false;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    protected boolean isContainExpression(String name) {
+
+        if (name != null) {
+            if (name.isEmpty()) {
+                return true;
+            } else {
+                List<Pattern> list = new ArrayList<>();
+                list.add(Pattern.compile("[0123456789]"));
+                list.add(Pattern.compile("^.*[\\(\\)].*$"));
+                list.add(Pattern.compile("^.*[\\[\\]].*$"));
+                list.add(Pattern.compile("[\\[\\.]"));
+                list.add(Pattern.compile("[\\[\\/]"));
+                list.add(Pattern.compile("vp|CP|Rédaction|BMS|CIO|directrice|POUILLE|SUIO|Directrice|Professionals|contact|learning|Infos|Meetings|Pôle|OPPE|Direction|BESANCON|PAU|POITIERS|POLYNESIE|REIMS|ROUEN|SAINT|TOULON|TOURS|UT|MULHOUSE|NANTES|NICE|NIMES|ORLEANS|METZ|VALLEE|BREST|LITTORAL|BRETAGNE|CHAMBERY|CORTE|DIJON|EVRY|REUNION|ROCHELLE|HAVRE|LIMOGES|AMIENS|UT|RECHERCHE|CERGY|NOUVELLE|MULHOUSE|CHAMBERY|Ticket|AVIGNON|ANTILLES|MESR|Régionale|smbh|DELL|hdg|Mouvement|admission|OUEST|ANGERS|Ecole|ESA|DAEP|Scientifique|Technologies|Liste|Web|Dii|Lycees|bureau|Chercheurs|legoutdessciences|Apec|LOTTERY|General|DSA|System|AMV|MAIF|MACSF|Méd|Habitat|Anjou|Systeme|REV|USA|Direction|Contract|Route|Maison|IUT|Pfizer|Figaro|welcome|Dr|Contact|IBS|IHEST|AEDD|VP|VPCA|Présidence|etudiant|dircom|CDLA|WEBMASTER|CONTACT|Président|AGENCE|FRANCE|Institut|Secrétariat|directeur|INTELLIGENT|Conférences|Candidatures|iperu|Sphinx|RuraliTIC|France|president|Plante|Presidente|rev|Espace|Cabinet|University|publics|SEMINAIRES|DMS|Conseil|DELL|Université|ipde|SG|Secrétaire|Direction,Ile|SECRETARIAT|MEDEF|Exclusive|Restaurants|president|FINANCE"));
+                for (Pattern pattern : list) {
+                    Matcher matcher = pattern.matcher(name);
+                    if (matcher.find()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    protected boolean isValidName(String name) {
+
+        if (isQuestionMark(name)) {
+            return false;
+        } else if (isContainExpression(name)) {
+            return false;
+        } else {
+            final Pattern pattern = Pattern.compile("([\\w\\p{Punct}]*)(@[\\w\\p{Punct}]*)");
+            if (name != null) {
+                if (name.isEmpty()) {
+                    return false;
+                } else {
+                    System.out.println("\t >> NAME: " + name);
+                    Matcher matcher = pattern.matcher(name);
+                    if (matcher.find()) {
+                        return false;
+                    }
+                    return true;
+                }
+
+            } else {
+                return false;
+            }
+        }
+
     }
 
 }

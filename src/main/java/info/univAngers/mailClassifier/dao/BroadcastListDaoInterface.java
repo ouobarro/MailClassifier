@@ -21,4 +21,6 @@ public interface BroadcastListDaoInterface {
     
     public List <BroadcastList> getAllBroadcastList() throws Exception;
     
+    public Integer countBroadcastList() throws Exception;
+    
 }

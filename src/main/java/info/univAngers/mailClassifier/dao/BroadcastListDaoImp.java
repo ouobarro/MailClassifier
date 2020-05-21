@@ -56,5 +56,21 @@ public class BroadcastListDaoImp implements BroadcastListDaoInterface {
             throw ex;
         }
     }
+
+    @Override
+    public Integer countBroadcastList() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(b) FROM BroadcastList b").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
+    }
     
 }

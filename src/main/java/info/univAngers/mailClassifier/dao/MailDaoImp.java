@@ -36,7 +36,7 @@ public class MailDaoImp implements MailDaoInterface {
     }
 
     @Override
-    public List<Mail> getMailByEmail(Integer idEmail) throws Exception {
+    public List<Mail> getAllSendedMailByEmailId(Integer idEmail) throws Exception {
         try{
             return em.createQuery("SELECT m FROM Mail m where m.email.idEmail = :idEmail")
                     .setParameter("idEmail", idEmail).getResultList();
@@ -67,6 +67,22 @@ public class MailDaoImp implements MailDaoInterface {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public Integer countMail() throws Exception {
+        Integer count = 0;
+        try{
+            Object o = em.createQuery("SELECT COUNT(m) FROM Mail m").getSingleResult();
+            if(o != null){
+                count = ((Long) o).intValue();
+            }
+        } catch(NoResultException noEx){
+            count = 0;
+        }catch(Exception ex){
+            throw ex;
+        }
+        return count;
     }
     
 }

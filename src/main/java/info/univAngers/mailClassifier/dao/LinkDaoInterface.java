@@ -22,4 +22,6 @@ public interface LinkDaoInterface {
      public Link getLinkByUrlLink(String urlLink) throws Exception;
     
     public List<Link> getAllLink() throws Exception;
+    
+    public Integer countLink() throws Exception;
 }

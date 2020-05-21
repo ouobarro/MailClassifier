@@ -5,6 +5,7 @@
  */
 package info.univAngers.mailClassifier.service;
 
+import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.PersonDto;
 import info.univAngers.mailClassifier.model.Person;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public interface PersonServiceInterface {
     
     public List<PersonDto> getAllPerson() throws Exception;
+    
+    public List<EmailDto> getPersonEmailList(Integer idPERSON) throws Exception;
     
     public PersonDto getPersonById(Integer id) throws Exception;
     

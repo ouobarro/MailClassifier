@@ -6,7 +6,9 @@
 package info.univAngers.mailClassifier.service;
 
 import info.univAngers.mailClassifier.dao.PersonDaoInterface;
+import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.dto.PersonDto;
+import info.univAngers.mailClassifier.model.Email;
 import info.univAngers.mailClassifier.model.Person;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,23 @@ public class PersonServiceImp implements PersonServiceInterface {
                 }
             }
             return personDtoList;
+        } catch(Exception ex){
+           throw ex;    
+        }
+    }
+    
+    @Override
+    public List<EmailDto> getPersonEmailList(Integer idPERSON) throws Exception {
+        try{
+            Person person = personDao.getPersonById(idPERSON);
+            List<Email> emailList = person.getEmailList();
+            List<EmailDto> emailDtoList = new ArrayList<>();
+            if(emailList != null){
+                for(Email email: emailList){
+                    emailDtoList.add(EntityDtoConverter.convertToDto(email));
+                }
+            }
+            return emailDtoList;
         } catch(Exception ex){
            throw ex;    
         }
