@@ -173,7 +173,6 @@ public class MailServiceImp implements MailServiceInterface {
             dataCount.setMailCount(mailCount);
             dataCount.setLinkCount(linkCount);
             dataCount.setPersonMoralCount(personMoralCount);
-            System.out.println("\t >>>> DATA COUNT OK");
         } catch (Exception ex) {
             throw ex;
         }
@@ -455,6 +454,14 @@ public class MailServiceImp implements MailServiceInterface {
     }
 
     protected boolean isQuestionMark(String name) {
+        
+        if(name == null){
+            return true;
+        }else{
+            return name.contains("?");
+        }
+        
+        /*
         final Pattern pattern = Pattern.compile("[\\?+]");
 
         if (name != null) {
@@ -471,6 +478,7 @@ public class MailServiceImp implements MailServiceInterface {
         } else {
             return true;
         }
+    */
     }
 
     protected boolean isContainExpression(String name) {
@@ -483,9 +491,10 @@ public class MailServiceImp implements MailServiceInterface {
                 list.add(Pattern.compile("[0123456789]"));
                 list.add(Pattern.compile("^.*[\\(\\)].*$"));
                 list.add(Pattern.compile("^.*[\\[\\]].*$"));
-                list.add(Pattern.compile("[\\[\\.]"));
-                list.add(Pattern.compile("[\\[\\/]"));
-                list.add(Pattern.compile("vp|CP|Rédaction|BMS|CIO|directrice|POUILLE|SUIO|Directrice|Professionals|contact|learning|Infos|Meetings|Pôle|OPPE|Direction|BESANCON|PAU|POITIERS|POLYNESIE|REIMS|ROUEN|SAINT|TOULON|TOURS|UT|MULHOUSE|NANTES|NICE|NIMES|ORLEANS|METZ|VALLEE|BREST|LITTORAL|BRETAGNE|CHAMBERY|CORTE|DIJON|EVRY|REUNION|ROCHELLE|HAVRE|LIMOGES|AMIENS|UT|RECHERCHE|CERGY|NOUVELLE|MULHOUSE|CHAMBERY|Ticket|AVIGNON|ANTILLES|MESR|Régionale|smbh|DELL|hdg|Mouvement|admission|OUEST|ANGERS|Ecole|ESA|DAEP|Scientifique|Technologies|Liste|Web|Dii|Lycees|bureau|Chercheurs|legoutdessciences|Apec|LOTTERY|General|DSA|System|AMV|MAIF|MACSF|Méd|Habitat|Anjou|Systeme|REV|USA|Direction|Contract|Route|Maison|IUT|Pfizer|Figaro|welcome|Dr|Contact|IBS|IHEST|AEDD|VP|VPCA|Présidence|etudiant|dircom|CDLA|WEBMASTER|CONTACT|Président|AGENCE|FRANCE|Institut|Secrétariat|directeur|INTELLIGENT|Conférences|Candidatures|iperu|Sphinx|RuraliTIC|France|president|Plante|Presidente|rev|Espace|Cabinet|University|publics|SEMINAIRES|DMS|Conseil|DELL|Université|ipde|SG|Secrétaire|Direction,Ile|SECRETARIAT|MEDEF|Exclusive|Restaurants|president|FINANCE"));
+                list.add(Pattern.compile("[\\.]"));
+                list.add(Pattern.compile("[\\/]"));
+                list.add(Pattern.compile("[\\_]"));
+                list.add(Pattern.compile("vp|maison|WEBMAIL|SERVICE|webmaster|Cité|Paris|Europe|Service|Secretariat|salondesmaires|MANS|Lettre|presidence|Rendez|Ouest|président|Solution|Directeur|CP|Rédaction|BMS|CIO|directrice|POUILLE|SUIO|Directrice|Professionals|contact|learning|Infos|Meetings|Pôle|OPPE|Direction|BESANCON|PAU|POITIERS|POLYNESIE|REIMS|ROUEN|SAINT|TOULON|TOURS|UT|MULHOUSE|NANTES|NICE|NIMES|ORLEANS|METZ|VALLEE|BREST|LITTORAL|BRETAGNE|CHAMBERY|CORTE|DIJON|EVRY|REUNION|ROCHELLE|HAVRE|LIMOGES|CAEN|Directeur|AMIENS|UT|RECHERCHE|CERGY|NOUVELLE|MULHOUSE|CHAMBERY|Ticket|AVIGNON|ANTILLES|MESR|Régionale|smbh|DELL|hdg|Mouvement|admission|OUEST|ANGERS|Ecole|ESA|DAEP|Scientifique|Technologies|Liste|Web|Dii|Lycees|bureau|Chercheurs|legoutdessciences|Apec|LOTTERY|General|DSA|System|AMV|MAIF|MACSF|Méd|Habitat|Anjou|Systeme|REV|USA|Direction|Contract|Route|Maison|IUT|Pfizer|Figaro|welcome|Dr|Contact|IBS|IHEST|AEDD|VP|VPCA|Présidence|etudiant|dircom|CDLA|WEBMASTER|CONTACT|Président|AGENCE|FRANCE|Institut|Secrétariat|directeur|INTELLIGENT|Conférences|Candidatures|iperu|Sphinx|RuraliTIC|France|president|Plante|Presidente|rev|Espace|Cabinet|University|publics|SEMINAIRES|DMS|Conseil|DELL|Université|ipde|SG|Secrétaire|Direction,Ile|SECRETARIAT|MEDEF|Exclusive|Restaurants|president|FINANCE"));
                 for (Pattern pattern : list) {
                     Matcher matcher = pattern.matcher(name);
                     if (matcher.find()) {

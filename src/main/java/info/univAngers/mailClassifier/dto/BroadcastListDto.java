@@ -5,6 +5,9 @@
  */
 package info.univAngers.mailClassifier.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import info.univAngers.mailClassifier.model.Email;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +22,8 @@ public class BroadcastListDto {
     
     @Getter @Setter
     private String libelle;
+    
+    @Getter @Setter
+    @JsonIgnore
+    private List<EmailDto> emailList;
 }

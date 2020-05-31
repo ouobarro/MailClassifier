@@ -7,6 +7,7 @@ package info.univAngers.mailClassifier.dao;
 
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
 import info.univAngers.mailClassifier.model.BroadcastList;
+import info.univAngers.mailClassifier.model.Email;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ public interface BroadcastListDaoInterface {
     public BroadcastList getBroadcastListByLibelle(String broadcastListLibelle) throws Exception;
     
     public List <BroadcastList> getAllBroadcastList() throws Exception;
+    
+    //public List <Email> getBroadcastListEmails() throws Exception;
     
     public Integer countBroadcastList() throws Exception;
     

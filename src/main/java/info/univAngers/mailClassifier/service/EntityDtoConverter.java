@@ -143,6 +143,10 @@ public class EntityDtoConverter {
             emailDto.setPersonDto(convertToDto(email.getPerson()));
         }
         
+        if(email.getPersonM() != null){
+            emailDto.setPersonMoralDto(convertToDto(email.getPersonM()));
+        }
+        
         if(email.getBroadcastList() != null){
             emailDto.setBclDto(convertToDto(email.getBroadcastList()));
         }

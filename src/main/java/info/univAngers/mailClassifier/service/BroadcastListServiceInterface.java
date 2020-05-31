@@ -6,6 +6,7 @@
 package info.univAngers.mailClassifier.service;
 
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
+import info.univAngers.mailClassifier.dto.EmailDto;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public interface BroadcastListServiceInterface {
     
     public List <BroadcastListDto> getAllBroadcastList() throws Exception;
     
+    public List<EmailDto> getBclEmailList(Integer idBcl) throws Exception;
     
     public BroadcastListDto getBroadcastListByLibelle(String libelle) throws Exception;
     

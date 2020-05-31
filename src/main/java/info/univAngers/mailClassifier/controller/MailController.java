@@ -62,8 +62,7 @@ public class MailController {
 
     
     @GetMapping("/mail-read/{dirPath}")
-    public List<String> testMailFileRead(@PathVariable("dirPath") String dirPath) {
-        System.out.println("================== ECHO FILE READING!!! ==================");
+    public List<String> readMailFile(@PathVariable("dirPath") String dirPath) {
         String absolutePath = "/home/barro/NetBeansProjects/president_2010/"+dirPath;
         
         try {
@@ -72,7 +71,6 @@ public class MailController {
             if(fileList != null){
                 for(File file: fileList){
                     CustomMessage message = new CustomMessage(file.getAbsolutePath());
-                    //CustomMessage message = new CustomMessage("375");
                     //mailService.insertMail(message);
                     fileListName.add(file.getAbsolutePath());
                 }

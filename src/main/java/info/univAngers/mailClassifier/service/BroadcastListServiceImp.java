@@ -7,7 +7,9 @@ package info.univAngers.mailClassifier.service;
 
 import info.univAngers.mailClassifier.dao.BroadcastListDaoInterface;
 import info.univAngers.mailClassifier.dto.BroadcastListDto;
+import info.univAngers.mailClassifier.dto.EmailDto;
 import info.univAngers.mailClassifier.model.BroadcastList;
+import info.univAngers.mailClassifier.model.Email;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -68,5 +70,24 @@ public class BroadcastListServiceImp implements BroadcastListServiceInterface{
            throw ex;    
         }
     }
+
+    @Override
+    public List<EmailDto> getBclEmailList(Integer idBcl) throws Exception {
+       
+        try{
+            BroadcastList broadcastList = broadcastListDao.getBroadcastListById(idBcl);
+            List<Email> emailList = broadcastList.getEmailList();
+            List<EmailDto> emailDtoList = new ArrayList<>();
+            if(emailList != null){
+                for(Email email: emailList){
+                    emailDtoList.add(EntityDtoConverter.convertToDto(email));
+                }
+            }
+            return emailDtoList;
+        } catch(Exception ex){
+           throw ex;    
+        }
+    }
+    
     
 }

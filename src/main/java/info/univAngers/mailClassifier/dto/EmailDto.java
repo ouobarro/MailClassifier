@@ -29,6 +29,9 @@ public class EmailDto {
     private PersonDto personDto;
     
     @Getter @Setter
+    private PersonMoralDto personMoralDto;
+    
+    @Getter @Setter
     private BroadcastListDto bclDto;
     
     @Getter @Setter
